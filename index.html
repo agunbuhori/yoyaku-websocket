@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Monitor</title>
+</head>
+<body>
+        <h1 id="data"></h1>
+        <input id="input" onkeyup="addData()"/>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+          var socket = io();
+          socket.on('ada_data', data => {
+            document.querySelector('#data').innerHTML = data;
+            console.log(data);
+          });
+
+          function addData() {
+              let value = document.querySelector('#input').value;
+              socket.emit('ada_data', value);
+          }
+        </script>
+</body>
+</html>
