@@ -4,9 +4,11 @@ const io = require('socket.io')(http);
 const db = require('./db');
 const md5 = require('md5');
 const bodyParser = require('body-parser');
+const jwt = require('jsonwebtoken');
+
 const PORT = 80;
 
-let User = db.model('User', db.Schema({
+const User = db.model('User', db.Schema({
   name: String,
   password: String,
   date: Date
@@ -14,6 +16,19 @@ let User = db.model('User', db.Schema({
 
 app.get('/', function (req, res) {
   res.sendFile(__dirname+'/index.html');
+});
+
+app.post('/login', function (req, res) {
+  const {name, password} = req.query;
+
+  User.findOne({name, password: md5(password)}, function (err, user) {
+    if (user) {
+      let token = jwt.sign({ user: user._id }, "LoremIpsumDolorSitAmet");
+      res.send({token});
+    } else {
+      res.send("Login failed");
+    }
+  })
 });
 
 app.get('/user', function (req, res) {
@@ -50,14 +65,30 @@ app.delete('/user/:id', function (req, res) {
 });
 
 io.use(function (socket, next) {
-  var handshake = socket.request;
+  const handshake = socket.request;
+  const {client_token} = handshake.headers;
   
-  console.log(handshake.headers);
+  jwt.verify(client_token, "LoremIpsumDolorSitAmet", function (err, decoded) {
+
+    if (decoded)
+      User.findById(decoded.user, function (err, user) {
+        if (user)
+          next();
+      });
+  });
+  
+  
+
+  // User.findById(user_id, function (err, user) {
+  //   if (user)
+  //     next();
+  // });
 });
 
 io.on('connection', socket => {
   socket.on('something', function (data) {
     io.sockets.emit('something', data);
+    console.log(data);
   });
 });
 

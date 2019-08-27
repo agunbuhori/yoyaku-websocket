@@ -11,11 +11,15 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io('/', {
-            extraHeaders: {
-                Authorization: "Lorem ipsum"
+                transportOptions: {
+                polling: {
+                    extraHeaders: {
+                        'client_token': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiNWQ2NGQzOGM4NTgyYTQ3ZDM1NWM1NGM1IiwiaWF0IjoxNTY2ODg5NTMyfQ.yW6dVvVB3RIdzgrZcD3ulIfaRIUY2FKTEfaRJuMfnKY'
+                    }
+                }
             }
         });
-        socket.emit('something', 'lorem ipsum dolor sit amet');
+        socket.emit('something', 'PLAT NOMOR');
     </script>
 </body>
 </html>
