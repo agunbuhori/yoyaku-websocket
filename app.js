@@ -88,7 +88,6 @@ io.use(function (socket, next) {
 io.on('connection', socket => {
   socket.on('something', function (data) {
     io.sockets.emit('something', data);
-    console.log(data);
   });
 });
 
