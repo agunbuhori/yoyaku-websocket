@@ -4,7 +4,7 @@ const io = require('socket.io')(http);
 const db = require('./db');
 const md5 = require('md5');
 const bodyParser = require('body-parser');
-const PORT = 8081;
+const PORT = 80;
 
 let User = db.model('User', db.Schema({
   name: String,
